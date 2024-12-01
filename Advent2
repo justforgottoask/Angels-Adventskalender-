@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitaler Adventskalender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7 url('https://source.unsplash.com/1600x900/?winter,snow') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .door {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            background: #8b0000;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+        .door:hover {
+            transform: scale(1.05);
+        }
+        .door.open {
+            background: #fff;
+            color: #000;
+            cursor: default;
+            transform: none;
+        }
+        .door-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+        }
+        .door.open .door-content {
+            display: none;
+        }
+        .door.open .door-reveal {
+            display: block;
+        }
+        .door-reveal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px;
+            text-align: center;
+            overflow-y: auto;
+        }
+        .door-reveal img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .door-reveal audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <!-- Die Türchen werden dynamisch durch JavaScript generiert -->
+    </div>
+
+    <script>
+        const songs = [
+            { title: "Give Out (Feed Me Remix) - Kill the Noise", cover: "cover1.jpg", audio: "song1.mp3" },
+            { title: "Dreamers - Emba, bCee", cover: "cover2.jpg", audio: "song2.mp3" },
+            { title: "Milan - L?cy", cover: "cover3.jpg", audio: "song3.mp3" },
+            { title: "South Side Stepper - Sustaree", cover: "cover4.jpg", audio: "song4.mp3" },
+            { title: "The Zodiac - Catacomb", cover: "cover5.jpg", audio: "song5.mp3" },
+            { title: "Joker Day - Dein eigener Song", cover: "cover6.jpg", audio: "song6.mp3" },
+            { title: "Alright Did Me - Manix", cover: "cover7.jpg", audio: "song7.mp3" },
+            { title: "Moonshine - Harmony", cover: "cover8.jpg", audio: "song8.mp3" },
+            { title: "Champion - TMSV", cover: "cover9.jpg", audio: "song9.mp3" },
+            { title: "I'm the Shit - Nitepunk", cover: "cover10.jpg", audio: "song10.mp3" },
+            { title: "Freq U All Nite - Ketboi69", cover: "cover11.jpg", audio: "song11.mp3" },
+            { title: "Terrorist - Renegade", cover: "cover12.jpg", audio: "song12.mp3" },
+            { title: "Another Place - Elliotsclomm", cover: "cover13.jpg", audio: "song13.mp3" },
+            { title: "Trust Us - Aksports", cover: "cover14.jpg", audio: "song14.mp3" },
+            { title: "Gotta Good Thing - Lyric", cover: "cover15.jpg", audio: "song15.mp3" },
+            { title: "Horses on Acid - Rove Ranger", cover: "cover16.jpg", audio: "song16.mp3" },
+            { title: "Wasted Love - BenZel", cover: "cover17.jpg", audio: "song17.mp3" },
+            { title: "One More Day - Example", cover: "cover18.jpg", audio: "song18.mp3" },
+            { title: "Panckmonium - Kessler", cover: "cover19.jpg", audio: "song19.mp3" },
+            { title: "The Future - DJ Limited", cover: "cover20.jpg", audio: "song20.mp3" },
+            { title: "Feel the Night - Ostbahnhof", cover: "cover21.jpg", audio: "song21.mp3" },
+            { title: "Evolution - Rebel Scum", cover: "cover22.jpg", audio: "song22.mp3" },
+            { title: "55555 Philip Dkick - Sinistarr", cover: "cover23.jpg", audio: "song23.mp3" },
+            { title: "Senna Mix Tape Vol 1 - Dein eigenes Album", cover: "cover24.jpg", audio: "song24.mp3" }
+        ];
+
+        const calendar = document.querySelector('.calendar');
+        const today = new Date().getDate();
+
+        songs.forEach((song, index) => {
+            const door = document.createElement('div');
+            door.classList.add('door');
+            if (index + 1 > today) {
+                door.classList.add('locked');
+            }
+
+            const doorContent = document.createElement('div');
+            doorContent.classList.add('door-content');
+            doorContent.textContent = index + 1;
+
+            const doorReveal = document.createElement('div');
+            doorReveal.classList.add('door-reveal');
+
+            const img = document.createElement('img');
+            img.src = song.cover;
+            img.alt = song.title;
+
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            const source = document.createElement('source');
+            source.src = song.audio;
+            source.type = 'audio/mpeg';
+            audio.appendChild(source);
+
+            const title = document.createElement('p');
+            title.textContent = song.title;
+
+            doorReveal.appendChild(img);
+            doorReveal.appendChild(title);
+            doorReveal.appendChild(audio);
+
+            door.appendChild(doorContent);
+            door.appendChild(doorReveal);
+
+            door.addEventListener('click', () => {
+                if (!door.classList.contains('locked')) {
+                    door.classList.add('open');
+                }
+            });
+
+            calendar.appendChild(door);
+        });
+    </script>
+</body>
+</html>
